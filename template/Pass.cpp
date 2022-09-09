@@ -1,31 +1,29 @@
-#include "llvm/Pass.h"
 #include "llvm/IR/Function.h"
+#include "llvm/IR/Module.h"
+#include "llvm/Pass.h"
 #include "llvm/Support/raw_ostream.h"
-
-#include "llvm/IR/LegacyPassManager.h"
-#include "llvm/Transforms/IPO/PassManagerBuilder.h"
 
 using namespace llvm;
 
 namespace {
-struct Hello : public FunctionPass {
-  static char ID;
-  Hello() : FunctionPass(ID) {}
 
-  bool runOnFunction(Function &F) override {
-    errs() << "Hello: ";
-    errs().write_escaped(F.getName()) << '\n';
+struct Template final : public ModulePass {
+  static char ID;
+  Template() : ModulePass(ID) {}
+
+  bool runOnModule(Module &M) override {
+    errs() << "Hello from the template pass\n";
+    errs() << "Here are some function names: ";
+    for (auto &F : M)
+      errs().write_escaped(F.getName()) << " ";
+    errs() << "\n\n";
     return false;
   }
-}; // end of struct Hello
-}  // end of anonymous namespace
+};
 
-char Hello::ID = 0;
-static RegisterPass<Hello> X("hello", "Hello World Pass",
+}  // namespace
+
+char Template::ID = 0;
+static RegisterPass<Template> X("template", "Template Pass",
                              false /* Only looks at CFG */,
                              false /* Analysis Pass */);
-
-static RegisterStandardPasses Y(
-    PassManagerBuilder::EP_EarlyAsPossible,
-    [](const PassManagerBuilder &Builder,
-       legacy::PassManagerBase &PM) { PM.add(new Hello()); });
