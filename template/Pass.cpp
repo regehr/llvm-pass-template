@@ -12,7 +12,7 @@ struct Template final : public ModulePass {
   Template() : ModulePass(ID) {}
 
   bool runOnModule(Module &M) override {
-    errs() << "Hello from the template pass\n";
+    errs() << "Hello from the template pass!\n";
     errs() << "Here are some function names: ";
     for (auto &F : M)
       errs().write_escaped(F.getName()) << " ";
@@ -21,9 +21,7 @@ struct Template final : public ModulePass {
   }
 };
 
-}  // namespace
+} // namespace
 
 char Template::ID = 0;
-static RegisterPass<Template> X("template", "Template Pass",
-                             false /* Only looks at CFG */,
-                             false /* Analysis Pass */);
+RegisterPass<Template> X("template", "Template Pass", false, false);

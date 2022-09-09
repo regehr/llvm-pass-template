@@ -14,11 +14,11 @@ cmake .. -G Ninja
 ninja
 ```
 
-third, test it like this:
+third, test it like this (while still in the build directory):
 
 ```
 clang++ -c -emit-llvm ../test/hello.cpp
-opt -load template/libtemplate.so -load-pass-plugin template/libtemplate.so -template hello.bc -o /dev/null
+opt -load template/libtemplate.so template/libtemplate.so -template hello.bc -o /dev/null
 ```
 
 this template pass is based on documentation
